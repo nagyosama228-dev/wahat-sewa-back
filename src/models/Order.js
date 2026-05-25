@@ -3,7 +3,7 @@ import pool from '../config/database.js';
 export class Order {
   static async create({ user_id, items, total_amount, shipping_cost, shipping_address, notes }) {
     const client = await pool.connect();
-    
+
     try {
       await client.query('BEGIN');
 
@@ -113,7 +113,7 @@ export class Order {
 
   static async updateStatus(id, status, changed_by, { notes, tracking_number, estimated_delivery, actual_delivery } = {}) {
     const client = await pool.connect();
-    
+
     try {
       await client.query('BEGIN');
 
@@ -178,7 +178,7 @@ export class Order {
         COUNT(*) FILTER (WHERE status = 'delivered') as delivered,
         COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled,
         COUNT(*) FILTER (WHERE status = 'returned') as returned,
-        COALESCE(SUM(total_amount) FILTER (WHERE status NOT IN ('cancelled', 'returned')), 0) as total_revenue
+        COALESCE(SUM(total_amount) FILTER (WHERE status IN ('confirmed', 'processing', 'shipped', 'delivered')), 0) as total_revenue
       FROM orders
     `);
     return result.rows[0];

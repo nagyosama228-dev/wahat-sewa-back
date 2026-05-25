@@ -113,7 +113,7 @@ export const getProfitAnalytics = async (req, res) => {
         SUM(shipping_cost) as shipping_revenue
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status NOT IN ('cancelled', 'returned')
+        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
       GROUP BY DATE(created_at)
       ORDER BY date ASC
     `);
@@ -130,7 +130,7 @@ export const getProfitAnalytics = async (req, res) => {
       LEFT JOIN order_items oi ON p.id = oi.product_id
       LEFT JOIN orders o ON oi.order_id = o.id
       WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND o.status NOT IN ('cancelled', 'returned')
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
       GROUP BY c.id, c.name, c.slug
       ORDER BY revenue DESC
     `);
@@ -148,7 +148,7 @@ export const getProfitAnalytics = async (req, res) => {
       LEFT JOIN order_items oi ON p.id = oi.product_id
       LEFT JOIN orders o ON oi.order_id = o.id
       WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND o.status NOT IN ('cancelled', 'returned')
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
       GROUP BY p.id, p.name, p.image_url, p.price
       ORDER BY total_sold DESC
       LIMIT 10
@@ -176,7 +176,7 @@ export const getProfitAnalytics = async (req, res) => {
         MAX(total_amount) as max_order_value
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status NOT IN ('cancelled', 'returned')
+        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
     `);
 
     // Monthly comparison
@@ -188,7 +188,7 @@ export const getProfitAnalytics = async (req, res) => {
         AVG(total_amount) as avg_order_value
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '90 days'
-        AND status NOT IN ('cancelled', 'returned')
+        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
       GROUP BY DATE_TRUNC('month', created_at)
       ORDER BY month ASC
     `);
@@ -203,7 +203,7 @@ export const getProfitAnalytics = async (req, res) => {
         COUNT(*) as total_orders
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status NOT IN ('cancelled', 'returned')
+        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
     `);
     res.json({
       revenueOverTime: revenueOverTime.rows,
@@ -279,5 +279,36 @@ export const getReports = async (req, res) => {
   } catch (error) {
     console.error('Get reports error:', error);
     res.status(500).json({ error: 'Failed to fetch reports' });
+  }
+};
+
+export const resetRecords = async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const { targets } = req.body; // ['orders', 'notifications', 'profits']
+    if (!Array.isArray(targets) || targets.length === 0) {
+      return res.status(400).json({ error: 'No targets specified for clearing.' });
+    }
+
+    await client.query('BEGIN');
+
+    for (const target of targets) {
+      if (target === 'orders' || target === 'profits') {
+        // Clearing orders inherently resets profits and order history. CASCADE clears items.
+        // Or if 'profits' alone is chosen but orders should clear, we truncate orders.
+        await client.query('TRUNCATE TABLE orders CASCADE');
+      } else if (target === 'notifications') {
+        await client.query('TRUNCATE TABLE notifications CASCADE');
+      }
+    }
+
+    await client.query('COMMIT');
+    res.json({ message: 'Selected records were successfully cleared.' });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Reset records error:', error);
+    res.status(500).json({ error: 'Failed to reset records.' });
+  } finally {
+    client.release();
   }
 };

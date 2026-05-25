@@ -81,6 +81,43 @@ export const updateUserRole = async (req, res) => {
   }
 };
 
+export const updateUserAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, role, password } = req.body;
+
+    const existingUser = await User.findById(id);
+    if (!existingUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (email) updates.email = email.toLowerCase();
+
+    // Prevent removing own admin privileges
+    if (role) {
+      if (req.user.id === id && role !== 'admin') {
+        return res.status(400).json({ error: 'You cannot remove your own admin access' });
+      }
+      updates.role = role;
+    }
+
+    if (password && password.length >= 6) {
+      updates.password_hash = await bcrypt.hash(password, 12);
+    }
+
+    const updatedUser = await User.update(id, updates);
+    res.json({
+      message: 'User updated successfully',
+      user: serializeUser(updatedUser),
+    });
+  } catch (error) {
+    console.error('Update user details error:', error);
+    res.status(500).json({ error: 'Failed to update user details' });
+  }
+};
+
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
