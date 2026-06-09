@@ -27,28 +27,38 @@ export const createShipment = async (order, shippingAddress) => {
   try {
     // ShipBlu official payload mapping
     const payload = {
-      reference: String(order.id),
-      customer_name: shippingAddress.name || 'عميل الواحات',
-      customer_phone: shippingAddress.whatsapp || shippingAddress.phone || '0000000000',
-      city: shippingAddress.city,
-      address: shippingAddress.address || 'العنوان غير محدد',
-      amount: parseFloat(order.total_amount),
-      notes: order.notes || 'لا يوجد ملاحظات',
-      is_test: API_URL.includes('staging') || API_URL.includes('app.shipblu.com')
+      customer: {
+        full_name: shippingAddress.name || 'عميل الواحات',
+        email: "customer@wahat-sewa.com",
+        phone: shippingAddress.whatsapp || shippingAddress.phone || '01000000000',
+        address: {
+          line_1: shippingAddress.address || 'العنوان غير محدد',
+          line_2: shippingAddress.city || 'Cairo',
+          zone: 1 // Default zone, ShipBlu might re-zone automatically
+        }
+      },
+      packages: [
+        {
+          package_size: 1 // 1: Small, 2: Medium, 3: Large
+        }
+      ],
+      cash_amount: parseFloat(order.total_amount),
+      order_notes: order.notes || 'لا يوجد ملاحظات',
+      merchant_order_reference: String(order.id)
     };
 
-    const response = await axios.post(`${API_URL}/api/v1/shipments`, payload, {
+    const response = await axios.post(`${API_URL}/api/v1/delivery-orders/`, payload, {
       headers: {
-        'Authorization': `Bearer ${API_KEY}`,
+        'Authorization': `Api-Key ${API_KEY}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       }
     });
 
     return {
-      shipment_id: response.data.data?.id || response.data.id,
-      tracking_number: response.data.data?.tracking_number || response.data.tracking_number,
-      awb_url: response.data.data?.awb_link || response.data.awb_link || null
+      shipment_id: response.data.id,
+      tracking_number: response.data.tracking_number,
+      awb_url: `https://app.shipblu.com/orders/delivery/${response.data.id}` // Link to the order in ShipBlu dashboard
     };
   } catch (error) {
     console.error("ShipBlu API Error:", error.response?.data || error.message);
