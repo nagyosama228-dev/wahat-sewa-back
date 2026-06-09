@@ -104,17 +104,20 @@ export const getProfitAnalytics = async (req, res) => {
     const { period = '30' } = req.query;
     const days = parseInt(period);
 
+    const timeGroupBy = days === 1 ? 'EXTRACT(HOUR FROM created_at)' : 'DATE(created_at)';
+    const selectTime = days === 1 ? "EXTRACT(HOUR FROM created_at) as date" : "DATE(created_at) as date";
+
     // Revenue over time
     const revenueOverTime = await pool.query(`
       SELECT 
-        DATE(created_at) as date,
+        ${selectTime},
         COUNT(*) as orders,
         SUM(total_amount) as revenue,
         SUM(shipping_cost) as shipping_revenue
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
         AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
-      GROUP BY DATE(created_at)
+      GROUP BY ${timeGroupBy}
       ORDER BY date ASC
     `);
 
@@ -193,17 +196,18 @@ export const getProfitAnalytics = async (req, res) => {
       ORDER BY month ASC
     `);
 
-    // Profit calculation (assuming 30% profit margin)
+    // Profit calculation (actual profit)
     const profitMetrics = await pool.query(`
       SELECT 
-        SUM(total_amount) as total_revenue,
-        SUM(total_amount) * 0.30 as estimated_profit,
-        SUM(total_amount) * 0.70 as estimated_cost,
-        AVG(total_amount) as avg_order_value,
-        COUNT(*) as total_orders
-      FROM orders
-      WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
+        SUM((oi.price_at_purchase - oi.wholesale_price_at_purchase) * oi.quantity) as actual_profit,
+        SUM(oi.price_at_purchase * oi.quantity) as total_revenue,
+        SUM(oi.wholesale_price_at_purchase * oi.quantity) as total_cost,
+        AVG(o.total_amount) as avg_order_value,
+        COUNT(DISTINCT o.id) as total_orders
+      FROM order_items oi
+      JOIN orders o ON oi.order_id = o.id
+      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
     `);
     res.json({
       revenueOverTime: revenueOverTime.rows,

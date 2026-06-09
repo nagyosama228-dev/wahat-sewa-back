@@ -12,6 +12,8 @@ import categoryRoutes from './routes/categories.js';
 import orderRoutes from './routes/orders.js';
 import adminRoutes from './routes/admin.js';
 import notificationRoutes from './routes/notifications.js';
+import shippingRegionRoutes from './routes/shippingRegions.js';
+import webhookRoutes from './routes/webhooks.js';
 
 dotenv.config();
 
@@ -22,7 +24,7 @@ app.use(helmet());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+  origin: true,
   credentials: true
 }));
 
@@ -45,6 +47,8 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/regions', shippingRegionRoutes);
+app.use('/api/webhooks', webhookRoutes);
 
 // Error handling
 app.use(notFound);

@@ -1,4 +1,5 @@
 import { Product } from '../models/Product.js';
+import { deleteImageByUrl } from '../utils/cloudinary.js';
 
 export const getProducts = async (req, res) => {
   try {
@@ -15,6 +16,11 @@ export const getProducts = async (req, res) => {
     };
 
     const products = await Product.findAll(filters);
+
+    if (req.user?.role !== 'admin') {
+      products.forEach(p => delete p.wholesale_price);
+    }
+
     res.json({ products });
   } catch (error) {
     console.error('Get products error:', error);
@@ -29,6 +35,10 @@ export const getProduct = async (req, res) => {
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
+    }
+
+    if (req.user?.role !== 'admin') {
+      delete product.wholesale_price;
     }
 
     res.json({ product });
@@ -58,10 +68,19 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
 
+    const oldProduct = await Product.findById(id);
+    if (!oldProduct) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
     const product = await Product.update(id, updates);
 
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+    if (product && updates.image_url && oldProduct.image_url && oldProduct.image_url !== updates.image_url) {
+      try {
+        await deleteImageByUrl(oldProduct.image_url);
+      } catch (cloudinaryError) {
+        console.error('Failed to delete old image from Cloudinary on product update:', cloudinaryError);
+      }
     }
 
     res.json({
@@ -77,6 +96,16 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (product && product.image_url) {
+      try {
+        await deleteImageByUrl(product.image_url);
+      } catch (cloudinaryError) {
+        console.error('Failed to delete image from Cloudinary on product deletion:', cloudinaryError);
+      }
+    }
+
     await Product.delete(id);
 
     res.json({ message: 'Product deleted successfully' });

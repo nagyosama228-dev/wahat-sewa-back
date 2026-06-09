@@ -94,6 +94,8 @@ const createTables = async () => {
         status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'returned')),
         shipping_address JSONB NOT NULL,
         tracking_number TEXT,
+        shipblu_tracking_number TEXT,
+        shipblu_shipment_id TEXT,
         estimated_delivery DATE,
         actual_delivery DATE,
         notes TEXT,
@@ -112,6 +114,13 @@ const createTables = async () => {
         price_at_purchase DECIMAL(10, 2) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
+    `);
+
+    // Add ShipBlu columns if they don't exist
+    await client.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS shipblu_tracking_number TEXT,
+      ADD COLUMN IF NOT EXISTS shipblu_shipment_id TEXT
     `);
 
     // Order status history table
@@ -136,6 +145,17 @@ const createTables = async () => {
         message TEXT NOT NULL,
         is_read BOOLEAN DEFAULT false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+
+    // Shipping regions table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS shipping_regions (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name TEXT UNIQUE NOT NULL,
+        shipping_cost DECIMAL(10, 2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -236,6 +256,40 @@ const createTables = async () => {
         FROM products existing
         WHERE existing.name = seed.name
       )
+    `);
+
+    // Seed default shipping regions
+    await client.query(`
+      INSERT INTO shipping_regions (name, shipping_cost)
+      VALUES
+        ('القاهرة', 65.00),
+        ('الجيزة', 65.00),
+        ('الإسكندرية', 65.00),
+        ('القليوبية', 65.00),
+        ('المنوفية', 65.00),
+        ('الغربية', 65.00),
+        ('الدقهلية', 65.00),
+        ('دمياط', 65.00),
+        ('كفر الشيخ', 65.00),
+        ('الشرقية', 65.00),
+        ('البحيرة', 65.00),
+        ('الإسماعيلية', 65.00),
+        ('بورسعيد', 65.00),
+        ('السويس', 65.00),
+        ('مطروح', 65.00),
+        ('شمال سيناء', 65.00),
+        ('جنوب سيناء', 65.00),
+        ('الفيوم', 100.00),
+        ('بني سويف', 100.00),
+        ('المنيا', 100.00),
+        ('أسيوط', 100.00),
+        ('سوهاج', 100.00),
+        ('قنا', 100.00),
+        ('الأقصر', 100.00),
+        ('أسوان', 100.00),
+        ('الوادي الجديد', 100.00),
+        ('البحر الأحمر', 100.00)
+      ON CONFLICT (name) DO NOTHING
     `);
 
     await client.query('COMMIT');

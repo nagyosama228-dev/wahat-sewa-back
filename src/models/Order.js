@@ -18,9 +18,9 @@ export class Order {
       // Create order items
       for (const item of items) {
         await client.query(
-          `INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase)
-           VALUES ($1, $2, $3, $4)`,
-          [order.id, item.product_id, item.quantity, item.price]
+          `INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase, wholesale_price_at_purchase)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [order.id, item.product_id, item.quantity, item.price, item.wholesale_price]
         );
 
         // Update product stock
@@ -111,7 +111,7 @@ export class Order {
     return result.rows;
   }
 
-  static async updateStatus(id, status, changed_by, { notes, tracking_number, estimated_delivery, actual_delivery } = {}) {
+  static async updateStatus(id, status, changed_by, { notes, tracking_number, estimated_delivery, actual_delivery, shipblu_tracking_number, shipblu_shipment_id, shipblu_awb_url } = {}) {
     const client = await pool.connect();
 
     try {
@@ -132,10 +132,13 @@ export class Order {
              ELSE actual_delivery
            END,
            notes = COALESCE($5, notes),
+           shipblu_tracking_number = COALESCE($7, shipblu_tracking_number),
+           shipblu_shipment_id = COALESCE($8, shipblu_shipment_id),
+           shipblu_awb_url = COALESCE($9, shipblu_awb_url),
            updated_at = CURRENT_TIMESTAMP
          WHERE id = $6
          RETURNING *`,
-        [status, tracking_number || null, estimated_delivery || null, nextActualDelivery, notes || null, id]
+        [status, tracking_number || null, estimated_delivery || null, nextActualDelivery, notes || null, id, shipblu_tracking_number || null, shipblu_shipment_id || null, shipblu_awb_url || null]
       );
 
       // Add to status history

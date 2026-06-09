@@ -12,7 +12,8 @@ export const handleValidationErrors = (req, res, next) => {
 
 export const registerValidation = [
   body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
+  body('whatsapp').matches(/^01[0125]\d{8}$/).withMessage('Valid WhatsApp number required'),
+  body('email').optional({ checkFalsy: true }).isEmail().withMessage('Valid email is required'),
   body('role').optional().isIn(['user', 'admin']).withMessage('Role must be user or admin'),
   body('password')
     .isLength({ min: 8 })
@@ -27,6 +28,12 @@ export const registerValidation = [
 ];
 
 export const loginValidation = [
+  body('whatsapp').matches(/^01[0125]\d{8}$/).withMessage('Valid WhatsApp number required'),
+  body('password').notEmpty().withMessage('Password is required'),
+  handleValidationErrors
+];
+
+export const adminLoginValidation = [
   body('email').isEmail().withMessage('Valid email is required'),
   body('password').notEmpty().withMessage('Password is required'),
   handleValidationErrors
@@ -34,7 +41,8 @@ export const loginValidation = [
 
 export const profileUpdateValidation = [
   body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
+  body('email').optional({ checkFalsy: true }).isEmail().withMessage('Valid email is required'),
+  body('whatsapp').optional({ checkFalsy: true }).matches(/^01[0125]\d{8}$/).withMessage('Valid WhatsApp number required'),
   handleValidationErrors
 ];
 
@@ -54,8 +62,9 @@ export const changePasswordValidation = [
 
 export const productValidation = [
   body('name').trim().notEmpty().withMessage('Product name is required'),
-  body('image_url').isURL().withMessage('Valid image URL is required'),
+  body('image_url').notEmpty().withMessage('Image URL is required'),
   body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
+  body('wholesale_price').optional().isFloat({ min: 0 }).withMessage('Wholesale price must be a positive number'),
   body('description').optional().trim(),
   body('category_id').optional({ nullable: true, values: 'falsy' }).isUUID(),
   body('badge').optional().isIn(['best_seller', 'featured', 'most_requested', 'new_arrival', 'none']),
@@ -78,7 +87,7 @@ export const orderValidation = [
   body('items.*.quantity').isInt({ min: 1 }).withMessage('Quantity must be at least 1'),
   body('shipping_address').isObject().withMessage('Shipping address is required'),
   body('shipping_address.name').notEmpty().withMessage('Recipient name is required'),
-  body('shipping_address.phone').notEmpty().withMessage('Phone number is required'),
+  body('shipping_address.whatsapp').notEmpty().withMessage('WhatsApp number is required'),
   body('shipping_address.address').notEmpty().withMessage('Address is required'),
   body('shipping_address.city').notEmpty().withMessage('City is required'),
   handleValidationErrors
@@ -96,5 +105,11 @@ export const orderStatusValidation = [
 
 export const userRoleValidation = [
   body('role').isIn(['user', 'admin']).withMessage('Role must be user or admin'),
+  handleValidationErrors
+];
+
+export const regionValidation = [
+  body('name').trim().notEmpty().withMessage('اسم المنطقة مطلوب'),
+  body('shipping_cost').isFloat({ min: 0 }).withMessage('يجب أن يكون سعر الشحن رقماً موجباً'),
   handleValidationErrors
 ];

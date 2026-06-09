@@ -2,6 +2,7 @@ import express from 'express';
 import {
   register,
   login,
+  adminLogin,
   logout,
   getMe,
   refreshToken,
@@ -11,6 +12,7 @@ import {
 import {
   registerValidation,
   loginValidation,
+  adminLoginValidation,
   profileUpdateValidation,
   changePasswordValidation
 } from '../middleware/validation.js';
@@ -22,6 +24,7 @@ const router = express.Router();
 
 router.post('/register', authLimiter, resolveRegistrationRole, registerValidation, register);
 router.post('/login', authLimiter, loginValidation, login);
+router.post('/admin-login', authLimiter, adminLoginValidation, adminLogin);
 router.post('/logout', authenticate, logout);
 router.get('/me', authenticate, getMe);
 router.put('/me', authenticate, profileUpdateValidation, updateMe);

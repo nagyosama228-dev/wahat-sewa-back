@@ -1,10 +1,18 @@
 import pool from '../config/database.js';
 
 export class User {
-  static async create({ name, email, password_hash, role = 'user' }) {
+  static async create({ name, email, whatsapp, password_hash, role = 'user' }) {
     const result = await pool.query(
-      'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, email, password_hash, role]
+      'INSERT INTO users (name, email, whatsapp, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [name, email || null, whatsapp || null, password_hash, role]
+    );
+    return result.rows[0];
+  }
+
+  static async findByWhatsapp(whatsapp) {
+    const result = await pool.query(
+      'SELECT * FROM users WHERE whatsapp = $1',
+      [whatsapp]
     );
     return result.rows[0];
   }
@@ -19,7 +27,7 @@ export class User {
 
   static async findAll({ search = '', role = '', limit = 100, offset = 0 } = {}) {
     let query = `
-      SELECT id, name, email, role, created_at, updated_at
+      SELECT id, name, email, whatsapp, role, created_at, updated_at
       FROM users
       WHERE 1 = 1
     `;
@@ -27,7 +35,7 @@ export class User {
     let paramIndex = 1;
 
     if (search) {
-      query += ` AND (name ILIKE $${paramIndex} OR email ILIKE $${paramIndex})`;
+      query += ` AND (name ILIKE $${paramIndex} OR email ILIKE $${paramIndex} OR whatsapp ILIKE $${paramIndex})`;
       params.push(`%${search}%`);
       paramIndex++;
     }
@@ -47,7 +55,7 @@ export class User {
 
   static async findById(id) {
     const result = await pool.query(
-      'SELECT id, name, email, role, created_at, updated_at FROM users WHERE id = $1',
+      'SELECT id, name, email, whatsapp, role, created_at, updated_at FROM users WHERE id = $1',
       [id]
     );
     return result.rows[0];
@@ -68,7 +76,7 @@ export class User {
     
     const values = Object.values(updates);
     const result = await pool.query(
-      `UPDATE users SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, name, email, role, created_at, updated_at`,
+      `UPDATE users SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = $1 RETURNING id, name, email, whatsapp, role, created_at, updated_at`,
       [id, ...values]
     );
     return result.rows[0];
@@ -80,7 +88,7 @@ export class User {
 
   static async list(limit = 50, offset = 0) {
     const result = await pool.query(
-      'SELECT id, name, email, role, created_at FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2',
+      'SELECT id, name, email, whatsapp, role, created_at FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2',
       [limit, offset]
     );
     return result.rows;

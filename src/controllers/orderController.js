@@ -1,6 +1,7 @@
 import { Order } from '../models/Order.js';
 import { Product } from '../models/Product.js';
 import { Notification } from '../models/Notification.js';
+import { createShipment } from '../services/shipbluService.js';
 import pool from '../config/database.js';
 
 export const getOrders = async (req, res) => {
@@ -91,11 +92,22 @@ export const createOrder = async (req, res) => {
       validatedItems.push({
         product_id: item.product_id,
         quantity: item.quantity,
-        price: parseFloat(product.price)
+        price: parseFloat(product.price),
+        wholesale_price: parseFloat(product.wholesale_price || 0)
       });
     }
 
-    const shippingCost = 45; // Fixed shipping cost
+    // Fetch shipping cost from database for the selected city/region
+    let shippingCost = 65.00; // Default fallback
+    if (shipping_address && shipping_address.city) {
+      const regionResult = await pool.query(
+        'SELECT shipping_cost FROM shipping_regions WHERE name = $1',
+        [shipping_address.city.trim()]
+      );
+      if (regionResult.rows.length > 0) {
+        shippingCost = parseFloat(regionResult.rows[0].shipping_cost);
+      }
+    }
     const finalTotal = totalAmount + shippingCost;
 
     // Create order
@@ -140,7 +152,7 @@ export const createOrder = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status, notes, tracking_number, estimated_delivery, actual_delivery } = req.body;
+    let { status, notes, tracking_number, estimated_delivery, actual_delivery } = req.body;
 
     const order = await Order.findById(id);
     
@@ -148,12 +160,33 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ error: 'Order not found' });
     }
 
+    let shipbluData = { shipblu_tracking_number: null, shipblu_shipment_id: null, shipblu_awb_url: null };
+
+    // Auto-create ShipBlu shipment if order is approved (processing or confirmed) and has no shipment id yet
+    if ((status === 'processing' || status === 'confirmed') && !order.shipblu_shipment_id) {
+      try {
+        const sbResponse = await createShipment(order, order.shipping_address);
+        shipbluData.shipblu_shipment_id = sbResponse.shipment_id;
+        shipbluData.shipblu_tracking_number = sbResponse.tracking_number;
+        shipbluData.shipblu_awb_url = sbResponse.awb_url;
+        
+        // Let's also sync it to the standard tracking_number if it's not provided manually
+        if (!tracking_number) {
+           tracking_number = sbResponse.tracking_number;
+        }
+      } catch (error) {
+        console.error("ShipBlu Auto-Sync Failed:", error);
+        return res.status(400).json({ error: error.message || "حدث خطأ أثناء الربط مع شركة الشحن" });
+      }
+    }
+
     // Update order status
     const updatedOrder = await Order.updateStatus(id, status, req.user.id, {
       notes,
       tracking_number,
       estimated_delivery,
-      actual_delivery
+      actual_delivery,
+      ...shipbluData
     });
 
     const trackingText = tracking_number ? ` رقم التتبع: ${tracking_number}.` : '';

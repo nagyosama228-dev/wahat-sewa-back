@@ -6,6 +6,7 @@ export class Product {
       'name',
       'image_url',
       'price',
+      'wholesale_price',
       'description',
       'category_id',
       'badge',
@@ -19,11 +20,11 @@ export class Product {
     );
   }
 
-  static async create({ name, image_url, price, description, category_id, badge, stock, sort_order = 0, is_active = true }) {
+  static async create({ name, image_url, price, wholesale_price = 0, description, category_id, badge, stock, sort_order = 0, is_active = true }) {
     const result = await pool.query(
-      `INSERT INTO products (name, image_url, price, description, category_id, badge, stock, sort_order, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
-      [name, image_url, price, description, category_id, badge, stock, sort_order, is_active]
+      `INSERT INTO products (name, image_url, price, wholesale_price, description, category_id, badge, stock, sort_order, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+      [name, image_url, price, wholesale_price, description, category_id, badge, stock, sort_order, is_active]
     );
     return result.rows[0];
   }
