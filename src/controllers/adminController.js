@@ -104,119 +104,118 @@ export const getProfitAnalytics = async (req, res) => {
     const { period = '30' } = req.query;
     const days = parseInt(period);
 
-    const timeGroupBy = days === 1 ? 'EXTRACT(HOUR FROM created_at)' : 'DATE(created_at)';
-    const selectTime = days === 1 ? "EXTRACT(HOUR FROM created_at) as date" : "DATE(created_at) as date";
-
-    // Revenue over time
-    const revenueOverTime = await pool.query(`
+    // 1. Overview Orders Stats
+    const ordersOverview = await pool.query(`
       SELECT 
-        ${selectTime},
-        COUNT(*) as orders,
-        SUM(total_amount) as revenue,
-        SUM(shipping_cost) as shipping_revenue
-      FROM orders
-      WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
-      GROUP BY ${timeGroupBy}
-      ORDER BY date ASC
-    `);
-
-    // Revenue by category
-    const revenueByCategory = await pool.query(`
-      SELECT 
-        c.name as category,
-        c.slug,
-        COUNT(DISTINCT o.id) as orders,
-        SUM(oi.quantity * oi.price_at_purchase) as revenue
-      FROM categories c
-      LEFT JOIN products p ON c.id = p.category_id
-      LEFT JOIN order_items oi ON p.id = oi.product_id
-      LEFT JOIN orders o ON oi.order_id = o.id
-      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
-      GROUP BY c.id, c.name, c.slug
-      ORDER BY revenue DESC
-    `);
-
-    // Top selling products
-    const topSellingProducts = await pool.query(`
-      SELECT 
-        p.id,
-        p.name,
-        p.image_url,
-        p.price,
-        SUM(oi.quantity) as total_sold,
-        SUM(oi.quantity * oi.price_at_purchase) as total_revenue
-      FROM products p
-      LEFT JOIN order_items oi ON p.id = oi.product_id
-      LEFT JOIN orders o ON oi.order_id = o.id
-      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
-      GROUP BY p.id, p.name, p.image_url, p.price
-      ORDER BY total_sold DESC
-      LIMIT 10
-    `);
-
-    // Order completion rate
-    const completionRate = await pool.query(`
-      SELECT 
-        COUNT(*) as total,
+        COUNT(*) as total_orders,
         COUNT(*) FILTER (WHERE status = 'delivered') as delivered,
+        COUNT(*) FILTER (WHERE status = 'shipped') as shipped,
+        COUNT(*) FILTER (WHERE status = 'processing') as processing,
+        COUNT(*) FILTER (WHERE status = 'confirmed') as confirmed,
+        COUNT(*) FILTER (WHERE status = 'pending') as pending,
         COUNT(*) FILTER (WHERE status = 'cancelled') as cancelled,
-        ROUND(
-          ((COUNT(*) FILTER (WHERE status = 'delivered'))::NUMERIC / NULLIF(COUNT(*), 0)) * 100,
-          2
-        ) as completion_rate
+        COUNT(*) FILTER (WHERE status = 'returned') as returned
       FROM orders
       WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
     `);
 
-    // Average order value
-    const averageOrderValue = await pool.query(`
-      SELECT 
-        AVG(total_amount) as avg_order_value,
-        MIN(total_amount) as min_order_value,
-        MAX(total_amount) as max_order_value
-      FROM orders
-      WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
-        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
-    `);
-
-    // Monthly comparison
-    const monthlyComparison = await pool.query(`
-      SELECT 
-        DATE_TRUNC('month', created_at) as month,
-        COUNT(*) as orders,
-        SUM(total_amount) as revenue,
-        AVG(total_amount) as avg_order_value
-      FROM orders
-      WHERE created_at >= CURRENT_DATE - INTERVAL '90 days'
-        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
-      GROUP BY DATE_TRUNC('month', created_at)
-      ORDER BY month ASC
-    `);
-
-    // Profit calculation (actual profit)
+    // 2. Exact Profit Metrics
     const profitMetrics = await pool.query(`
       SELECT 
-        SUM((oi.price_at_purchase - oi.wholesale_price_at_purchase) * oi.quantity) as actual_profit,
-        SUM(oi.price_at_purchase * oi.quantity) as total_revenue,
-        SUM(oi.wholesale_price_at_purchase * oi.quantity) as total_cost,
+        SUM((oi.price_at_purchase - COALESCE(oi.wholesale_price_at_purchase, 0)) * oi.quantity) as net_profit,
+        SUM(oi.price_at_purchase * oi.quantity) as total_products_revenue,
+        SUM(COALESCE(oi.wholesale_price_at_purchase, 0) * oi.quantity) as total_wholesale_cost,
+        SUM(o.shipping_cost) as total_shipping_fees,
+        SUM(o.total_amount) as gross_revenue,
         AVG(o.total_amount) as avg_order_value,
-        COUNT(DISTINCT o.id) as total_orders
+        COUNT(DISTINCT o.id) as total_successful_orders
       FROM order_items oi
       JOIN orders o ON oi.order_id = o.id
       WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
         AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
     `);
+
+    // 3. Top Selling Products (Detailed)
+    const topSellingProducts = await pool.query(`
+      SELECT 
+        p.id,
+        p.name,
+        p.image_url,
+        p.price as current_price,
+        p.wholesale_price as current_wholesale,
+        SUM(oi.quantity) as total_units_sold,
+        SUM(oi.quantity * oi.price_at_purchase) as total_revenue,
+        SUM(oi.quantity * (oi.price_at_purchase - COALESCE(oi.wholesale_price_at_purchase, 0))) as total_profit
+      FROM products p
+      JOIN order_items oi ON p.id = oi.product_id
+      JOIN orders o ON oi.order_id = o.id
+      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
+      GROUP BY p.id, p.name, p.image_url, p.price, p.wholesale_price
+      ORDER BY total_units_sold DESC
+      LIMIT 15
+    `);
+
+    // 4. Top Customers (Detailed)
+    const topCustomers = await pool.query(`
+      SELECT 
+        u.id,
+        u.name,
+        u.email,
+        u.phone,
+        COUNT(DISTINCT o.id) as total_orders,
+        SUM(o.total_amount) as total_spent,
+        SUM(o.total_amount - o.shipping_cost) as total_products_spent
+      FROM users u
+      JOIN orders o ON u.id = o.user_id
+      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
+      GROUP BY u.id, u.name, u.email, u.phone
+      ORDER BY total_spent DESC
+      LIMIT 15
+    `);
+
+    // 5. Category Performance
+    const categoryPerformance = await pool.query(`
+      SELECT 
+        c.name as category_name,
+        COUNT(DISTINCT o.id) as total_orders,
+        SUM(oi.quantity) as total_items_sold,
+        SUM(oi.quantity * oi.price_at_purchase) as total_revenue,
+        SUM(oi.quantity * (oi.price_at_purchase - COALESCE(oi.wholesale_price_at_purchase, 0))) as total_profit
+      FROM categories c
+      JOIN products p ON c.id = p.category_id
+      JOIN order_items oi ON p.id = oi.product_id
+      JOIN orders o ON oi.order_id = o.id
+      WHERE o.created_at >= CURRENT_DATE - INTERVAL '${days} days'
+        AND o.status IN ('confirmed', 'processing', 'shipped', 'delivered')
+      GROUP BY c.id, c.name
+      ORDER BY total_profit DESC
+    `);
+
+    // 6. Regional / City Performance
+    const regionalPerformance = await pool.query(`
+      SELECT 
+        shipping_address->>'city' as city,
+        COUNT(id) as total_orders,
+        SUM(total_amount) as total_revenue,
+        SUM(shipping_cost) as total_shipping_collected
+      FROM orders
+      WHERE created_at >= CURRENT_DATE - INTERVAL '${days} days'
+        AND status IN ('confirmed', 'processing', 'shipped', 'delivered')
+        AND shipping_address->>'city' IS NOT NULL
+      GROUP BY shipping_address->>'city'
+      ORDER BY total_orders DESC
+      LIMIT 15
+    `);
+
     res.json({
-      revenueOverTime: revenueOverTime.rows,
-      revenueByCategory: revenueByCategory.rows,
+      ordersOverview: ordersOverview.rows[0],
+      profitMetrics: profitMetrics.rows[0],
       topSellingProducts: topSellingProducts.rows,
-      completionRate: completionRate.rows[0],
-      averageOrderValue: averageOrderValue.rows[0],
-      monthlyComparison: monthlyComparison.rows,
-      profitMetrics: profitMetrics.rows[0]
+      topCustomers: topCustomers.rows,
+      categoryPerformance: categoryPerformance.rows,
+      regionalPerformance: regionalPerformance.rows
     });
   } catch (error) {
     console.error('Get profit analytics error:', error);

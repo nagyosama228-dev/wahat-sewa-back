@@ -1,10 +1,43 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const API_KEY = process.env.SHIPBLU_API_KEY;
 const API_URL = process.env.SHIPBLU_API_URL || 'https://api.staging.shipblu.com';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const zonesMap = JSON.parse(fs.readFileSync(path.join(__dirname, 'shipblu_zones.json'), 'utf8'));
+
+function normalizeArabic(text) {
+  if (!text) return '';
+  return text
+    .replace(/[أإآ]/g, 'ا')
+    .replace(/ة/g, 'ه')
+    .replace(/ي/g, 'ى');
+}
+
+function findZone(city) {
+  const normalizedCity = normalizeArabic(city.trim());
+  for (const item of zonesMap) {
+    const govNorm = normalizeArabic(item.gov);
+    const parts = govNorm.split('-').map(p => p.trim());
+    if (parts.includes(normalizedCity)) {
+      return item.zone;
+    }
+    const cityNorm = normalizeArabic(item.city);
+    const cityParts = cityNorm.split('-').map(p => p.trim());
+    if (cityParts.includes(normalizedCity)) {
+      return item.zone;
+    }
+  }
+  // Default to UNZONED (284) if not found
+  return 284;
+}
 
 /**
  * Creates a new shipment in ShipBlu.
@@ -25,6 +58,8 @@ export const createShipment = async (order, shippingAddress) => {
   }
 
   try {
+    const targetZone = findZone(shippingAddress.city || '');
+
     // ShipBlu official payload mapping
     const payload = {
       customer: {
@@ -34,7 +69,7 @@ export const createShipment = async (order, shippingAddress) => {
         address: {
           line_1: shippingAddress.address || 'العنوان غير محدد',
           line_2: shippingAddress.city || 'Cairo',
-          zone: 1 // Default zone, ShipBlu might re-zone automatically
+          zone: targetZone
         }
       },
       packages: [

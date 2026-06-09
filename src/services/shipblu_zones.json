@@ -1,0 +1,632 @@
+[
+  {
+    "gov": "Cairo - القاهرة",
+    "city": "New Cairo - القاهرة الجديدة",
+    "zone": 1,
+    "zoneName": "3rd Settlement - التجمع الثالث"
+  },
+  {
+    "gov": "Cairo - القاهرة",
+    "city": "Cairo - القاهرة",
+    "zone": 69,
+    "zoneName": "Al Manial - المنيل"
+  },
+  {
+    "gov": "Cairo - القاهرة",
+    "city": "New Cities - المدن الجديدة",
+    "zone": 60,
+    "zoneName": "10th of Ramadan - العاشر من رمضان"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Sidi Bishr Qibli - سيدي بشر قبلي",
+    "zone": 203,
+    "zoneName": "Victoria - فكتوريا"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "El Maamora - المعمورة",
+    "zone": 195,
+    "zoneName": "Abu Kir - أبوقير"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Agamy - العجمي",
+    "zone": 166,
+    "zoneName": "El Qabary - القباري"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Smouha - سموحة",
+    "zone": 460,
+    "zoneName": "May 14th - 14 مايو"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Al Montazah 1st - حى المنتزه اول",
+    "zone": 180,
+    "zoneName": "El Saraya - السراية"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Bahary – بحري",
+    "zone": 152,
+    "zoneName": "El Labban - اللبان"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Burj Al Arab and Al Ameria - برج العرب و العامرية",
+    "zone": 170,
+    "zoneName": "El Amreya - العامرية"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Sahel - الساحل",
+    "zone": 481,
+    "zoneName": "Abu Talat - ابو تلات"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Al Awaid - العوايد",
+    "zone": 394,
+    "zoneName": "El Soyof Qibli - السيوف قبلي"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "District East - حى شرقى",
+    "zone": 154,
+    "zoneName": "Karmoz - كرموز"
+  },
+  {
+    "gov": "Alexandria - الاسكندرية",
+    "city": "Al-Raml district - حى الرمل",
+    "zone": 176,
+    "zoneName": "Bakos - باكوس"
+  },
+  {
+    "gov": "North Coast - الساحل الشمالي",
+    "city": "Sahel - الساحل",
+    "zone": 204,
+    "zoneName": "Sahel - الساحل الشمالي"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Mansoura - المنصورة",
+    "zone": 205,
+    "zoneName": "المنصورة"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Talkha - طلخا",
+    "zone": 213,
+    "zoneName": "مركز طلخا"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Belkas - بلقاس",
+    "zone": 287,
+    "zoneName": "مركز بلقاس"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Sherbin - شربين",
+    "zone": 288,
+    "zoneName": "مركز شربين"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Nabarwuah - نبروة",
+    "zone": 289,
+    "zoneName": "مركز نبروة"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Mit Ghamr - ميت غمر",
+    "zone": 290,
+    "zoneName": "قسم ميت غمر"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Aga - أجا",
+    "zone": 291,
+    "zoneName": "مركز أجا"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Simbalween - السنبلاوين",
+    "zone": 292,
+    "zoneName": "مركز السنبلاوين"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "ElManzalah - المنزلة",
+    "zone": 546,
+    "zoneName": "المنزله-Al Manzalah"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Dikrinis - دكرنس",
+    "zone": 294,
+    "zoneName": "مركز دكرنس"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Minyet ElNasr - منية النصر",
+    "zone": 545,
+    "zoneName": "Minyet ElNasr - منية النصر"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "Al Jamaliyah Dakahlia-الجمالية الدقلهليه",
+    "zone": 547,
+    "zoneName": "Al Jamaliyah Dakahlia-الجمالية الدقلهليه"
+  },
+  {
+    "gov": "Al-Dakahlia - الدقهلية",
+    "city": "El Matareya Dakahlia- المطرية الدقلهليه",
+    "zone": 548,
+    "zoneName": "El Matareya Dakahlia- المطرية الدقلهليه"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Banha - بنها",
+    "zone": 216,
+    "zoneName": "مركز بنها"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Kafr Shokr - كفر شكر",
+    "zone": 332,
+    "zoneName": "مركز كفر شكر"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Tukh - طوخ",
+    "zone": 333,
+    "zoneName": "مركز طوخ"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Shebeen ElKanater - شبين القناطر",
+    "zone": 334,
+    "zoneName": "مركز شبين القناطر"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Qaha - قها",
+    "zone": 335,
+    "zoneName": "مركز قها"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "Qalyub - قليوب",
+    "zone": 336,
+    "zoneName": "مركز قليوب"
+  },
+  {
+    "gov": "Qalyubia - القليوبية",
+    "city": "ElKanater ElKhayreya - القناطر الخيرية",
+    "zone": 337,
+    "zoneName": "مركز القناطر الخيرية"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Shebeen Al Kom - شبين الكوم",
+    "zone": 217,
+    "zoneName": "مركز شبين الكوم"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "ElBagor - الباجور",
+    "zone": 325,
+    "zoneName": "مركز الباجور"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Ashmoun - أشمون",
+    "zone": 326,
+    "zoneName": "مركز أشمون"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "ElShohdaa - الشهداء",
+    "zone": 327,
+    "zoneName": "مركز الشهداء"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Berket ElSabaa - بركة السبع",
+    "zone": 328,
+    "zoneName": "مركز بركة السبع"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Menouf - منوف",
+    "zone": 329,
+    "zoneName": "مركز منوف"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Quesna - قويسنا",
+    "zone": 330,
+    "zoneName": "مركز قويسنا"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Tala - تلا",
+    "zone": 331,
+    "zoneName": "مركز تلا"
+  },
+  {
+    "gov": "Monoufia - المنوفية",
+    "city": "Sadat city - مدينه السادات",
+    "zone": 584,
+    "zoneName": "Sadat city - مدينه السادات"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "ElMahala ElKobra - المحلة الكبرى",
+    "zone": 218,
+    "zoneName": "مركز المحلة الكبرى"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Tanta - طنطا",
+    "zone": 219,
+    "zoneName": "مركز طنطا"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "ElSantah - السنطة",
+    "zone": 296,
+    "zoneName": "مركز السنطة"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Basyoun - بسيون",
+    "zone": 297,
+    "zoneName": "مركز بسيون"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Kafr ElZayat - كفر الزيات",
+    "zone": 298,
+    "zoneName": "مركز كفر الزيات"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Ketour - قطور",
+    "zone": 299,
+    "zoneName": "مركز قطور"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Samanoud - سمنود",
+    "zone": 300,
+    "zoneName": "مركز سمنود"
+  },
+  {
+    "gov": "El Gharbia - الغربية",
+    "city": "Zeftah - زفتى",
+    "zone": 301,
+    "zoneName": "مركز زفتى"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Damanhour - دمنهور",
+    "zone": 220,
+    "zoneName": "مركز دمنهور"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Abo Hommos - ابوحمص",
+    "zone": 302,
+    "zoneName": "مركز ابوحمص"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Aldalangat - الدلنجات",
+    "zone": 303,
+    "zoneName": "مركز الدلنجات"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Almahmoudia - المحمودية",
+    "zone": 304,
+    "zoneName": "مركز المحمودية"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Abo Almatameer - ابو المطامير",
+    "zone": 305,
+    "zoneName": "مركز ابو المطامير"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Hosh Eissa - حوش عيسى",
+    "zone": 306,
+    "zoneName": "مركز حوش عيسى"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Edko - إدكو",
+    "zone": 307,
+    "zoneName": "مركز إدكو"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Etay Albarood - إيتاى البارود",
+    "zone": 308,
+    "zoneName": "مركز إيتاى البارود"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Kafr Aldawar - كفر الدوار",
+    "zone": 309,
+    "zoneName": "مركز كفر الدوار"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Kom Hamada - كوم حمادة",
+    "zone": 310,
+    "zoneName": "مركز كوم حمادة"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Rasheed - رشيد",
+    "zone": 311,
+    "zoneName": "مركز رشيد"
+  },
+  {
+    "gov": "Al-Beheira - البحيرة",
+    "city": "Shabrakheet - شبراخيت",
+    "zone": 312,
+    "zoneName": "مركز شبراخيت"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Kafr ElSheikh - كفر الشيخ",
+    "zone": 228,
+    "zoneName": "مركز كفر الشيخ"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Dessouk - دسوق",
+    "zone": 224,
+    "zoneName": "مركز دسوق"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Fuwah - فوه",
+    "zone": 226,
+    "zoneName": "مركز فوه"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Biyla - بيلا",
+    "zone": 222,
+    "zoneName": "مركز بيلا"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Sidi Salem - سيدى سالم",
+    "zone": 231,
+    "zoneName": "مركز سيدى سالم"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "ElHamoul - الحامول",
+    "zone": 227,
+    "zoneName": "مركز الحامول"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Keleen - قلين",
+    "zone": 230,
+    "zoneName": "مركز قلين"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "Mutuwbas - مطوبس",
+    "zone": 229,
+    "zoneName": "مركز مطوبس"
+  },
+  {
+    "gov": "Kafr El Sheikh - كفر الشيخ",
+    "city": "ElRiyadh - الرياض",
+    "zone": 225,
+    "zoneName": "مركز الرياض"
+  },
+  {
+    "gov": "Assiut - أسيوط",
+    "city": "Assiut - أسيوط",
+    "zone": 232,
+    "zoneName": "مركز أسيوط"
+  },
+  {
+    "gov": "Fayoum - الفيوم",
+    "city": "Fayoum - الفيوم",
+    "zone": 244,
+    "zoneName": "Fayoum City - مدينة الفيوم"
+  },
+  {
+    "gov": "Beni Suef - بني سويف",
+    "city": "Beni Suef - بني سويف",
+    "zone": 249,
+    "zoneName": "Beni Suef City - مدينة بني سويف"
+  },
+  {
+    "gov": "Ismailiya - الاسماعيلية",
+    "city": "Ismailiya - الاسماعيلية",
+    "zone": 257,
+    "zoneName": "Abu Atwa - أبو عطوة"
+  },
+  {
+    "gov": "Suez - السويس",
+    "city": "Suez - السويس",
+    "zone": 274,
+    "zoneName": "Al Suez District - منطقة السويس"
+  },
+  {
+    "gov": "Giza - الجيزة",
+    "city": "6 October - السادس من أكتوبر",
+    "zone": 106,
+    "zoneName": "Abu Rawash & Smart village - أبو رواش والقرية الذكية"
+  },
+  {
+    "gov": "Giza - الجيزة",
+    "city": "Giza - الجيزة",
+    "zone": 72,
+    "zoneName": "Zamalek - الزمالك"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "Damietta - دمياط",
+    "zone": 313,
+    "zoneName": "دمياط"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "Faraskour - فارسكور",
+    "zone": 314,
+    "zoneName": "فارسكور"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "ElZarka - الزرقا",
+    "zone": 315,
+    "zoneName": "الزرقا"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "Kafr ElBateekh - كفر البطيخ",
+    "zone": 316,
+    "zoneName": "البطيخ"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "Kafr Saad - كفر سعد",
+    "zone": 317,
+    "zoneName": "كفر سعد"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "Ras El-Bar-رأس البر",
+    "zone": 549,
+    "zoneName": "Ras El-Bar-رأس البر"
+  },
+  {
+    "gov": "Damietta - دمياط",
+    "city": "دمياط الجديده- New Damietta",
+    "zone": 550,
+    "zoneName": "دمياط الجديده- New Damietta"
+  },
+  {
+    "gov": "Portsaid - بورسعيد",
+    "city": "Portsaid - بورسعيد",
+    "zone": 318,
+    "zoneName": "قسم شرطة الضواحي"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "ELZagazig - الزقازيق",
+    "zone": 338,
+    "zoneName": "مركز الزقازيق"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Abu Hammad - أبو حماد",
+    "zone": 339,
+    "zoneName": "مركز أبو حماد"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Abu Kabir - أبو كبير",
+    "zone": 340,
+    "zoneName": "مركز أبوكبير"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "ElHusseiniya - الحسينية",
+    "zone": 341,
+    "zoneName": "مركز الحسينية"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "ElIbrahimiya - الابراهيمية",
+    "zone": 342,
+    "zoneName": "مركز الابراهيمية"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Awlad Saqr - أولاد صقر",
+    "zone": 343,
+    "zoneName": "مركز أولاد صقر"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Bilbeis - بلبيس",
+    "zone": 344,
+    "zoneName": "مركز بلبيس"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Diyarb Negm - ديرب نجم",
+    "zone": 345,
+    "zoneName": "مركز ديرب نجم"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Faqous - فاقوس",
+    "zone": 346,
+    "zoneName": "مركز فاقوس"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Hihya - ههيا",
+    "zone": 347,
+    "zoneName": "مركز ههيا"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Kafr Saqr - كفر صقر",
+    "zone": 348,
+    "zoneName": "مركز كفر صقر"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Mashtool El Souk - مشتول السوق",
+    "zone": 349,
+    "zoneName": "مركز مشتول السوق"
+  },
+  {
+    "gov": "Sharkia - الشرقية",
+    "city": "Minya El Qamh - منيا القمح",
+    "zone": 350,
+    "zoneName": "مركز منيا القمح"
+  },
+  {
+    "gov": "NOGOV",
+    "city": "NOCITY",
+    "zone": 284,
+    "zoneName": "UNZONED"
+  },
+  {
+    "gov": "Minya - المنيا",
+    "city": "Minya - المنيا",
+    "zone": 255,
+    "zoneName": "New Minya - المنيا الجديدة"
+  },
+  {
+    "gov": "Suhaj - سوهاج",
+    "city": "Suhaj - سوهاج",
+    "zone": 426,
+    "zoneName": "Akhmim - أخميم"
+  },
+  {
+    "gov": "Qena - قنا",
+    "city": "Qina - قنا",
+    "zone": 438,
+    "zoneName": "Abu Tesht - أبو تيشت"
+  }
+]
